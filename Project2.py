@@ -4,7 +4,8 @@ import re
 import os
 import csv
 import unittest
-
+#Name: Marini Qian
+#Worked with: Sureet Sarau
 
 def get_titles_from_search_results(filename):
     """
@@ -14,9 +15,25 @@ def get_titles_from_search_results(filename):
 
     [('Book title 1', 'Author 1'), ('Book title 2', 'Author 2')...]
     """
+    filename = "search_results.htm"
+    with open(filename) as f:
+        soup = BeautifulSoup(f, 'html.parser')
 
-    pass
-
+    #titles 
+    titlelist = []
+    titles = soup.find_all('a', class_ = "bookTitle")
+    for x in titles:
+        titlelist.append(x.text.strip())
+    
+    #authors
+    authorlist = []
+    authors = soup.find_all('a', class_ = "authorName")
+    for x in authors:
+        authorlist.append(x.text.strip())
+   
+    final = zip(titlelist, authorlist)
+    
+    return final
 
 def get_search_links():
     """
@@ -31,6 +48,7 @@ def get_search_links():
     “https://www.goodreads.com/book/show/kdkd".
 
     """
+
 
     pass
 
@@ -107,6 +125,7 @@ class TestCases(unittest.TestCase):
         # call get_titles_from_search_results() on search_results.htm and save to a local variable
 
         # check that the number of titles extracted is correct (20 titles)
+        self.AssertEqual(len(), 20)
 
         # check that the variable you saved after calling the function is a list
 
@@ -118,6 +137,7 @@ class TestCases(unittest.TestCase):
 
     def test_get_search_links(self):
         # check that TestCases.search_urls is a list
+        self.assertEqual(type(TestCases.search_urls), list)
 
         # check that the length of TestCases.search_urls is correct (10 URLs)
 
