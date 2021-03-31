@@ -98,20 +98,23 @@ def summarize_best_books(filepath):
     https://www.goodreads.com/choiceawards/best-fiction-books-2020, then you should append 
     ("Fiction", "The Testaments (The Handmaid's Tale, #2)", "https://www.goodreads.com/choiceawards/best-fiction-books-2020") 
     to your list of tuples.
-    """
-    
+    """ 
     with open(filepath) as f:
         soup = BeautifulSoup(f, 'html.parser')
+
+    anchor = soup.find_all("div", class_ = "category clearFix")
     
     bestbooks = []
 
-    category = soup.find("h4").text
-    title = soup.find("img", class_ = "category__winnerImage")["alt"]
-    url = soup.find("a")"href"]
+    for x in anchor:
+        a = x.find("a")
 
-    tup = (str(category.strip()), str(title), str(url))
-    bestbooks.append(tup)
-    print(bestbooks)
+        category = a.find("h4").text
+        title = a.find("img", class_ = "category__winnerImage")["alt"]
+        url = a["href"]
+
+        tup = (str(category.strip()), str(title), str(url))
+        bestbooks.append(tup)
 
     return bestbooks 
 
@@ -136,9 +139,13 @@ def write_csv(data, filename):
 
     This function should not return anything.
     """
+    with open(filename, 'w', newline='') as f:
+        writer = csv.writer(f)
+        header = ["Book Title", "Author Name"]
+        writer.writerow(header) 
+        for row in data:
+            writer.writerow(row)
     
-    pass
-
 
 def extra_credit(filepath):
     """
@@ -242,13 +249,20 @@ class TestCases(unittest.TestCase):
         # check that the last tuple is made up of the following 3 strings: 'Picture Books', 'Antiracist Baby', 'https://www.goodreads.com/choiceawards/best-picture-books-2020'
         self.assertEqual(var[-1], ('Picture Books', 'Antiracist Baby', 'https://www.goodreads.com/choiceawards/best-picture-books-2020'))
 
-    #def test_write_csv(self):
+    def test_write_csv(self):
         # call get_titles_from_search_results on search_results.htm and save the result to a variable
+        var = get_titles_from_search_results("search_results.htm")
 
         # call write csv on the variable you saved and 'test.csv'
+        write_csv(var, "test.csv")
 
         # read in the csv that you wrote (create a variable csv_lines - a list containing all the lines in the csv you just wrote to above)
+        f = open("test.csv", "r")
+        lines = f.readlines()
+        csv_lines = []
+        f.close()
 
+        for line in lines:
 
         # check that there are 21 lines in the csv
 
